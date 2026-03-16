@@ -1,0 +1,13 @@
+[
+  { "id": "c1", "staffId": "s1", "staffName": "田中太郎", "clientName": "物流センターA", "startDate": "2025-10-01", "endDate": "2026-06-30", "status": "active" },
+  { "id": "c2", "staffId": "s2", "staffName": "佐藤花子", "clientName": "コールセンター", "startDate": "2025-12-01", "endDate": "2026-05-31", "status": "active" },
+  { "id": "c3", "staffId": "s5", "staffName": "山田一郎", "clientName": "物流センターA", "startDate": "2025-10-01", "endDate": "2026-03-31", "status": "expiring_soon" },
+  { "id": "c4", "staffId": "s6", "staffName": "渡辺美紀", "clientName": "メーカーD", "startDate": "2025-10-01", "endDate": "2026-03-31", "status": "expiring_soon" },
+  { "id": "c5", "staffId": "s7", "staffName": "木村健太", "clientName": "SIer F", "startDate": "2025-11-01", "endDate": "2026-03-28", "status": "expiring_soon" },
+  { "id": "c6", "staffId": "s8", "staffName": "中村さくら", "clientName": "百貨店G", "startDate": "2025-10-01", "endDate": "2026-03-31", "status": "expiring_soon" },
+  { "id": "c7", "staffId": "s13", "staffName": "吉田勇気", "clientName": "製造メーカーJ", "startDate": "2025-11-01", "endDate": "2026-04-30", "status": "renewal_pending" },
+  { "id": "c8", "staffId": "s14", "staffName": "石井真理", "clientName": "食品工場K", "startDate": "2025-11-01", "endDate": "2026-04-30", "status": "renewal_pending" },
+  { "id": "c9", "staffId": "s15", "staffName": "藤田浩二", "clientName": "物流センターL", "startDate": "2025-12-01", "endDate": "2026-04-15", "status": "renewal_pending" },
+  { "id": "c10", "staffId": "s16", "staffName": "西村あかり", "clientName": "アパレルM", "startDate": "2025-11-01", "endDate": "2026-04-30", "status": "renewal_pending" },
+  { "id": "c11", "staffId": "s17", "staffName": "岡田拓也", "clientName": "IT企業N", "startDate": "2025-11-01", "endDate": "2026-04-30", "status": "renewal_pending" }
+]

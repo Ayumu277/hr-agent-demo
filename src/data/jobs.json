@@ -1,0 +1,12 @@
+[
+  { "id": "j1", "clientName": "物流センターA", "location": "千葉県船橋市", "requiredCount": 2, "assignedCount": 1, "skills": ["仕分け"], "hourlyRate": 1300, "status": "partially_filled" },
+  { "id": "j2", "clientName": "コールセンター", "location": "東京都新宿区", "requiredCount": 3, "assignedCount": 1, "skills": ["電話対応"], "hourlyRate": 1400, "status": "partially_filled" },
+  { "id": "j3", "clientName": "イベント会場", "location": "神奈川県横浜市", "requiredCount": 2, "assignedCount": 0, "skills": ["イベント"], "hourlyRate": 1200, "status": "open" },
+  { "id": "j4", "clientName": "倉庫B", "location": "埼玉県川口市", "requiredCount": 2, "assignedCount": 2, "skills": ["ピッキング"], "hourlyRate": 1400, "status": "filled" },
+  { "id": "j5", "clientName": "メーカーD", "location": "東京都品川区", "requiredCount": 1, "assignedCount": 1, "skills": ["事務"], "hourlyRate": 1350, "status": "filled" },
+  { "id": "j6", "clientName": "SIer F", "location": "東京都港区", "requiredCount": 2, "assignedCount": 1, "skills": ["IT", "ヘルプデスク"], "hourlyRate": 1600, "status": "partially_filled" },
+  { "id": "j7", "clientName": "百貨店G", "location": "東京都中央区", "requiredCount": 3, "assignedCount": 3, "skills": ["販売", "接客"], "hourlyRate": 1300, "status": "filled" },
+  { "id": "j8", "clientName": "株式会社ABC", "location": "東京都千代田区", "requiredCount": 2, "assignedCount": 0, "skills": ["経理", "簿記"], "hourlyRate": 1500, "status": "open" },
+  { "id": "j9", "clientName": "製造メーカーJ", "location": "愛知県豊田市", "requiredCount": 3, "assignedCount": 3, "skills": ["製造"], "hourlyRate": 1350, "status": "filled" },
+  { "id": "j10", "clientName": "物流C", "location": "千葉県市川市", "requiredCount": 1, "assignedCount": 0, "skills": ["入出庫管理"], "hourlyRate": 1500, "status": "open" }
+]

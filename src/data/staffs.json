@@ -1,0 +1,19 @@
+[
+  { "id": "s1", "name": "田中太郎", "skills": ["仕分け", "フォークリフト"], "status": "working", "currentClient": "物流センターA", "qualifications": ["フォークリフト免許"] },
+  { "id": "s2", "name": "佐藤花子", "skills": ["電話対応", "PC操作"], "status": "working", "currentClient": "コールセンター", "qualifications": [] },
+  { "id": "s3", "name": "鈴木一郎", "skills": ["電話対応", "英語"], "status": "available", "currentClient": null, "qualifications": ["TOEIC 800"] },
+  { "id": "s4", "name": "高橋美咲", "skills": ["イベント", "接客"], "status": "available", "currentClient": null, "qualifications": [] },
+  { "id": "s5", "name": "山田一郎", "skills": ["仕分け", "ピッキング"], "status": "expiring", "currentClient": "物流センターA", "qualifications": ["フォークリフト免許"] },
+  { "id": "s6", "name": "渡辺美紀", "skills": ["事務", "Excel", "経理"], "status": "expiring", "currentClient": "メーカーD", "qualifications": ["簿記3級"] },
+  { "id": "s7", "name": "木村健太", "skills": ["IT", "ヘルプデスク"], "status": "expiring", "currentClient": "SIer F", "qualifications": ["ITパスポート"] },
+  { "id": "s8", "name": "中村さくら", "skills": ["接客", "販売"], "status": "expiring", "currentClient": "百貨店G", "qualifications": [] },
+  { "id": "s9", "name": "小林直子", "skills": ["経理", "Excel"], "status": "available", "currentClient": null, "qualifications": ["簿記2級"] },
+  { "id": "s10", "name": "伊藤恵", "skills": ["経理", "決算"], "status": "available", "currentClient": null, "qualifications": ["簿記1級"] },
+  { "id": "s11", "name": "松本翔太", "skills": ["経理"], "status": "available", "currentClient": null, "qualifications": ["簿記2級"] },
+  { "id": "s12", "name": "加藤裕子", "skills": ["事務", "経理"], "status": "available", "currentClient": null, "qualifications": ["簿記2級"] },
+  { "id": "s13", "name": "吉田勇気", "skills": ["製造", "品質管理"], "status": "working", "currentClient": "製造メーカーJ", "qualifications": [] },
+  { "id": "s14", "name": "石井真理", "skills": ["食品加工", "衛生管理"], "status": "working", "currentClient": "食品工場K", "qualifications": ["食品衛生責任者"] },
+  { "id": "s15", "name": "藤田浩二", "skills": ["物流", "在庫管理"], "status": "working", "currentClient": "物流センターL", "qualifications": ["フォークリフト免許"] },
+  { "id": "s16", "name": "西村あかり", "skills": ["販売", "VMD"], "status": "working", "currentClient": "アパレルM", "qualifications": [] },
+  { "id": "s17", "name": "岡田拓也", "skills": ["IT", "プログラミング"], "status": "working", "currentClient": "IT企業N", "qualifications": ["基本情報技術者"] }
+]
