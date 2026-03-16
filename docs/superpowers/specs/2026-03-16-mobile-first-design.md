@@ -18,6 +18,7 @@ MUI デフォルトの `md` (900px) で分岐:
 
 - iOS Safari 15+、Chrome Android 108+（`dvh` サポート済み）
 - `dvh` 非対応ブラウザ向けフォールバック: `height: calc(100vh - 56px); height: calc(100dvh - 56px);`（2行記述で上書き）
+- `index.html` の viewport meta タグに `viewport-fit=cover` が必要（`env(safe-area-inset-bottom)` を有効にするため）。未設定の場合は追加する
 
 ## 変更対象と設計
 
@@ -43,7 +44,7 @@ MUI デフォルトの `md` (900px) で分岐:
   - `BottomNavigation` を追加（`position: fixed; bottom: 0`）
   - iOS Safe Area 対応: `pb: 'calc(56px + env(safe-area-inset-bottom))'`
   - BottomNavigationAction 2つ: SmartToy（AIエージェント）、Dashboard（ダッシュボード）
-  - BottomNav の `value` は `useLocation().pathname` と同期。`onChange` で `navigate()` を呼ぶ
+  - BottomNav: 各 `BottomNavigationAction` に `value='/'`, `value='/dashboard'` を設定。`BottomNavigation` の `value` に `location.pathname` を直接渡し、`onChange` で `navigate(newValue)` を呼ぶ
   - Main content に `pb: 'calc(56px + env(safe-area-inset-bottom))'`（BottomNav + Safe Area 分）を追加
   - Main content の `width` を `100%` に（Sidebar 幅の引き算を除去）
   - **モバイルヘッダー**: AppBar は追加しない。各ページのタイトル行（AgentPage: 「AIエージェント」、DashboardPage: 「ダッシュボード」）がヘッダーの役割を果たす
@@ -57,8 +58,9 @@ MUI デフォルトの `md` (900px) で分岐:
 
 #### height 調整
 - PC: `height: 'calc(100vh - 48px)'`（現状維持）
-- モバイル: `height: 'calc(100vh - calc(56px + env(safe-area-inset-bottom)))'; height: 'calc(100dvh - calc(56px + env(safe-area-inset-bottom)))'`（BottomNav + Safe Area 分を考慮。`dvh` フォールバック込み）
-- padding はこの height の中に含まれるため、height 計算に padding を加算する必要はない
+- モバイル: `height: 'calc(100vh - calc(56px + env(safe-area-inset-bottom) + 16px))'; height: 'calc(100dvh - calc(56px + env(safe-area-inset-bottom) + 16px))'`
+  - 56px = BottomNav 高さ、`env()` = iOS Safe Area、16px = AppLayout の `p: 1`（上下 8px×2）
+  - `dvh` フォールバック込み（2行記述）
 
 #### padding 調整
 - PC: `p: 3`（AppLayout 側で制御）
@@ -134,6 +136,7 @@ DataGrid 3つ（スタッフ・案件・契約）
 - カードは MUI `Card` + `CardContent` で実装
 - ステータスは `Chip` で表示（DataGrid 版と同じ色分け）
 - 充足率は `LinearProgress` で表示
+- DashboardPage は固定高さを持たず、通常のページスクロールで閲覧。AppLayout の `pb`（BottomNav分）により、コンテンツが BottomNav の裏に隠れることはない
 
 ### 8. リレーページ
 
@@ -162,6 +165,7 @@ DataGrid 3つ（スタッフ・案件・契約）
 
 | ファイル | 変更内容 |
 |---------|---------|
+| `index.html` | viewport meta に `viewport-fit=cover` を追加 |
 | `src/components/layout/AppLayout.tsx` | BottomNav 追加、モバイル時 Sidebar 非表示 |
 | `src/components/layout/Sidebar.tsx` | 変更なし（AppLayout 側で制御） |
 | `src/features/agent/AgentPage.tsx` | height/padding レスポンシブ化 |
