@@ -14,6 +14,11 @@ MUI デフォルトの `md` (900px) で分岐:
 - `< md` = モバイル
 - `>= md` = PC（現状維持）
 
+## ブラウザターゲット
+
+- iOS Safari 15+、Chrome Android 108+（`dvh` サポート済み）
+- `dvh` 非対応ブラウザ向けフォールバック: `height: calc(100vh - 56px); height: calc(100dvh - 56px);`（2行記述で上書き）
+
 ## 変更対象と設計
 
 ### 1. AppLayout.tsx — レイアウト構造
@@ -34,11 +39,14 @@ MUI デフォルトの `md` (900px) で分岐:
 - `useMediaQuery(theme.breakpoints.up('md'))` で PC/モバイル判定
 - **PC時**: 現状維持（`Sidebar` + `Main Content`）
 - **モバイル時**:
-  - `Sidebar` を非表示
+  - `Sidebar` を条件付きレンダリング（`{isDesktop && <Sidebar />}`）で非表示
   - `BottomNavigation` を追加（`position: fixed; bottom: 0`）
+  - iOS Safe Area 対応: `pb: 'calc(56px + env(safe-area-inset-bottom))'`
   - BottomNavigationAction 2つ: SmartToy（AIエージェント）、Dashboard（ダッシュボード）
-  - Main content に `pb: '56px'`（BottomNav の高さ分）を追加
+  - BottomNav の `value` は `useLocation().pathname` と同期。`onChange` で `navigate()` を呼ぶ
+  - Main content に `pb: 'calc(56px + env(safe-area-inset-bottom))'`（BottomNav + Safe Area 分）を追加
   - Main content の `width` を `100%` に（Sidebar 幅の引き算を除去）
+  - **モバイルヘッダー**: AppBar は追加しない。各ページのタイトル行（AgentPage: 「AIエージェント」、DashboardPage: 「ダッシュボード」）がヘッダーの役割を果たす
 
 ### 2. Sidebar.tsx — サイドバー
 
@@ -49,11 +57,12 @@ MUI デフォルトの `md` (900px) で分岐:
 
 #### height 調整
 - PC: `height: 'calc(100vh - 48px)'`（現状維持）
-- モバイル: `height: 'calc(100dvh - 56px)'`（BottomNav 分を考慮）
+- モバイル: `height: 'calc(100vh - calc(56px + env(safe-area-inset-bottom)))'; height: 'calc(100dvh - calc(56px + env(safe-area-inset-bottom)))'`（BottomNav + Safe Area 分を考慮。`dvh` フォールバック込み）
+- padding はこの height の中に含まれるため、height 計算に padding を加算する必要はない
 
 #### padding 調整
 - PC: `p: 3`（AppLayout 側で制御）
-- モバイル: `p: 1`
+- モバイル: `p: 1`（AppLayout 側で `{ xs: 1, md: 3 }` に変更）
 
 #### ヘッダー
 - タイトルのフォントサイズ: `{ xs: 'h6', md: 'h5' }`
@@ -68,6 +77,8 @@ flex-wrap: nowrap;
 scrollbar-width: none; /* Firefox */
 &::-webkit-scrollbar { display: none; } /* Chrome/Safari */
 ```
+
+- スクロール可能であることを示すため、右端のチップが途切れて見えるようにする（`padding-right` で余白を入れない）。チップ間の `gap` で自然に途切れが見える
 
 #### PC
 - 現状維持（`flex-wrap: wrap`）
@@ -124,7 +135,9 @@ DataGrid 3つ（スタッフ・案件・契約）
 - ステータスは `Chip` で表示（DataGrid 版と同じ色分け）
 - 充足率は `LinearProgress` で表示
 
-### 8. リレーページ（/go/index.html）
+### 8. リレーページ
+
+**注意**: リレーページは hr-agent-demo リポジトリの外にある。パスは `prj-aice-demo/frontend/public/go/index.html`（親プロジェクト内）。このスペックでは設計のみ記載し、実装は別タスクとして扱う可能性がある。
 
 #### モバイル検出時
 - `location.replace(DEMO_URL)` で即座にデモ本体にリダイレクト
@@ -157,4 +170,4 @@ DataGrid 3つ（スタッフ・案件・契約）
 | `src/features/agent/components/ChatMessage.tsx` | フォント/余白微調整 |
 | `src/features/agent/components/ToolExecution.tsx` | フォント/余白/アイコンサイズ微調整 |
 | `src/features/dashboard/DashboardPage.tsx` | カード形式追加、useMediaQuery で切替 |
-| `../../public/go/index.html` (リレーページ) | モバイル時リダイレクト有効化 |
+| `prj-aice-demo/frontend/public/go/index.html` (リレーページ・別リポジトリ) | モバイル時リダイレクト有効化 |
