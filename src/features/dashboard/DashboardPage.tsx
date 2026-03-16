@@ -1,4 +1,151 @@
-import { Typography } from '@mui/material';
+import { Box, Typography, Chip, Paper, Stack, LinearProgress } from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
+import type { GridColDef } from '@mui/x-data-grid';
+import staffsData from '../../data/staffs.json';
+import jobsData from '../../data/jobs.json';
+import contractsData from '../../data/contracts.json';
+
+const statusLabel: Record<string, { label: string; color: 'success' | 'warning' | 'error' | 'default' }> = {
+  working: { label: '稼働中', color: 'success' },
+  available: { label: '待機中', color: 'default' },
+  expiring: { label: '契約終了間近', color: 'warning' },
+  active: { label: '稼働中', color: 'success' },
+  renewal_pending: { label: '更新待ち', color: 'warning' },
+  expiring_soon: { label: '期限切れ間近', color: 'error' },
+  open: { label: '募集中', color: 'error' },
+  partially_filled: { label: '一部充足', color: 'warning' },
+  filled: { label: '充足', color: 'success' },
+};
+
+const staffColumns: GridColDef[] = [
+  { field: 'name', headerName: '氏名', width: 120 },
+  {
+    field: 'skills',
+    headerName: 'スキル',
+    width: 200,
+    renderCell: (params) => (
+      <Stack direction="row" spacing={0.5} sx={{ flexWrap: 'wrap', py: 0.5 }}>
+        {(params.value as string[]).map((s) => (
+          <Chip key={s} label={s} size="small" />
+        ))}
+      </Stack>
+    ),
+  },
+  {
+    field: 'status',
+    headerName: '稼働状況',
+    width: 130,
+    renderCell: (params) => {
+      const s = statusLabel[params.value as string];
+      return s ? <Chip label={s.label} color={s.color} size="small" /> : null;
+    },
+  },
+  { field: 'currentClient', headerName: '派遣先', width: 150 },
+];
+
+const jobColumns: GridColDef[] = [
+  { field: 'clientName', headerName: 'クライアント', width: 150 },
+  { field: 'location', headerName: '勤務地', width: 150 },
+  { field: 'requiredCount', headerName: '必要人数', width: 90, type: 'number' },
+  {
+    field: 'fulfillment',
+    headerName: '充足率',
+    width: 150,
+    renderCell: (params) => {
+      const row = params.row;
+      const rate = row.requiredCount > 0 ? (row.assignedCount / row.requiredCount) * 100 : 0;
+      return (
+        <Box sx={{ width: '100%', display: 'flex', alignItems: 'center', gap: 1 }}>
+          <LinearProgress variant="determinate" value={rate} sx={{ flexGrow: 1, height: 8, borderRadius: 4 }} color={rate >= 100 ? 'success' : rate > 0 ? 'warning' : 'error'} />
+          <Typography variant="caption">{Math.round(rate)}%</Typography>
+        </Box>
+      );
+    },
+  },
+  {
+    field: 'status',
+    headerName: 'ステータス',
+    width: 120,
+    renderCell: (params) => {
+      const s = statusLabel[params.value as string];
+      return s ? <Chip label={s.label} color={s.color} size="small" /> : null;
+    },
+  },
+];
+
+const contractColumns: GridColDef[] = [
+  { field: 'staffName', headerName: 'スタッフ', width: 120 },
+  { field: 'clientName', headerName: 'クライアント', width: 150 },
+  { field: 'startDate', headerName: '開始日', width: 110 },
+  { field: 'endDate', headerName: '終了日', width: 110 },
+  {
+    field: 'status',
+    headerName: 'ステータス',
+    width: 130,
+    renderCell: (params) => {
+      const s = statusLabel[params.value as string];
+      return s ? <Chip label={s.label} color={s.color} size="small" /> : null;
+    },
+  },
+];
+
+function countByStatus<T extends { status: string }>(data: T[]) {
+  const counts: Record<string, number> = {};
+  data.forEach((d) => { counts[d.status] = (counts[d.status] || 0) + 1; });
+  return counts;
+}
+
 export default function DashboardPage() {
-  return <Typography variant="h4">ダッシュボード</Typography>;
+  const staffCounts = countByStatus(staffsData);
+  const jobCounts = countByStatus(jobsData);
+  const contractCounts = countByStatus(contractsData);
+
+  return (
+    <Box>
+      <Typography variant="h5" fontWeight="bold" gutterBottom>ダッシュボード</Typography>
+      <Stack spacing={3}>
+        <Paper sx={{ p: 2 }}>
+          <Stack direction="row" alignItems="center" spacing={1} mb={1} sx={{ flexWrap: 'wrap' }}>
+            <Typography variant="h6">スタッフ一覧</Typography>
+            <Chip label={`${staffsData.length}名`} size="small" color="primary" />
+            {Object.entries(staffCounts).map(([status, count]) => {
+              const s = statusLabel[status];
+              return s ? <Chip key={status} label={`${s.label} ${count}`} size="small" color={s.color} variant="outlined" /> : null;
+            })}
+          </Stack>
+          <Box sx={{ height: 400 }}>
+            <DataGrid rows={staffsData} columns={staffColumns} pageSizeOptions={[10]} initialState={{ pagination: { paginationModel: { pageSize: 10 } } }} disableRowSelectionOnClick getRowHeight={() => 'auto'} />
+          </Box>
+        </Paper>
+
+        <Paper sx={{ p: 2 }}>
+          <Stack direction="row" alignItems="center" spacing={1} mb={1} sx={{ flexWrap: 'wrap' }}>
+            <Typography variant="h6">案件一覧</Typography>
+            <Chip label={`${jobsData.length}件`} size="small" color="primary" />
+            {Object.entries(jobCounts).map(([status, count]) => {
+              const s = statusLabel[status];
+              return s ? <Chip key={status} label={`${s.label} ${count}`} size="small" color={s.color} variant="outlined" /> : null;
+            })}
+          </Stack>
+          <Box sx={{ height: 400 }}>
+            <DataGrid rows={jobsData} columns={jobColumns} pageSizeOptions={[10]} initialState={{ pagination: { paginationModel: { pageSize: 10 } } }} disableRowSelectionOnClick />
+          </Box>
+        </Paper>
+
+        <Paper sx={{ p: 2 }}>
+          <Stack direction="row" alignItems="center" spacing={1} mb={1} sx={{ flexWrap: 'wrap' }}>
+            <Typography variant="h6">契約一覧</Typography>
+            <Chip label={`${contractsData.length}件`} size="small" color="primary" />
+            {Object.entries(contractCounts).map(([status, count]) => {
+              const s = statusLabel[status];
+              return s ? <Chip key={status} label={`${s.label} ${count}`} size="small" color={s.color} variant="outlined" /> : null;
+            })}
+          </Stack>
+          <Box sx={{ height: 400 }}>
+            <DataGrid rows={contractsData} columns={contractColumns} pageSizeOptions={[10]} initialState={{ pagination: { paginationModel: { pageSize: 10 } } }} disableRowSelectionOnClick />
+          </Box>
+        </Paper>
+      </Stack>
+    </Box>
+  );
 }
