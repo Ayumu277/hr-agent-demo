@@ -19,8 +19,8 @@ const router = createBrowserRouter([
     path: '/',
     element: <AppLayout />,
     children: [
-      { index: true, element: <Suspense fallback={<Loading />}><DashboardPage /></Suspense> },
-      { path: 'agent', element: <Suspense fallback={<Loading />}><AgentPage /></Suspense> },
+      { index: true, element: <Suspense fallback={<Loading />}><AgentPage /></Suspense> },
+      { path: 'dashboard', element: <Suspense fallback={<Loading />}><DashboardPage /></Suspense> },
     ],
   },
 ]);

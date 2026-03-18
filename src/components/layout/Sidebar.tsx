@@ -8,8 +8,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 const DRAWER_WIDTH = 240;
 
 const menuItems = [
-  { label: 'ダッシュボード', path: '/', icon: <Dashboard /> },
-  { label: 'AIエージェント', path: '/agent', icon: <SmartToy /> },
+  { label: 'AIエージェント', path: '/', icon: <SmartToy /> },
+  { label: 'ダッシュボード', path: '/dashboard', icon: <Dashboard /> },
 ];
 
 export default function Sidebar() {

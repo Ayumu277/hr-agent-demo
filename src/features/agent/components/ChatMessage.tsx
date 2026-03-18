@@ -9,7 +9,7 @@ interface Props {
 export default function ChatMessage({ message }: Props) {
   const isUser = message.type === 'user';
   return (
-    <Box sx={{ display: 'flex', justifyContent: isUser ? 'flex-end' : 'flex-start', mb: 1.5 }}>
+    <Box sx={{ display: 'flex', justifyContent: isUser ? 'flex-end' : 'flex-start', mb: { xs: 1, md: 1.5 } }}>
       {!isUser && (
         <Avatar sx={{ bgcolor: 'grey.400', mr: 1, width: 32, height: 32 }}>
           <SmartToy fontSize="small" />
@@ -18,13 +18,13 @@ export default function ChatMessage({ message }: Props) {
       <Paper
         elevation={1}
         sx={{
-          px: 2, py: 1, maxWidth: '75%',
+          px: { xs: 1.5, md: 2 }, py: { xs: 0.75, md: 1 }, maxWidth: '75%',
           bgcolor: isUser ? 'primary.main' : 'grey.100',
           color: isUser ? 'white' : 'text.primary',
           borderRadius: isUser ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
         }}
       >
-        <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', lineHeight: 1.7 }}>
+        <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', lineHeight: 1.7, fontSize: { xs: 13, md: 14 } }}>
           {message.content}
         </Typography>
       </Paper>

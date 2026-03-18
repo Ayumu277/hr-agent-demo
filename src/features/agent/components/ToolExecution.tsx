@@ -22,24 +22,24 @@ export default function ToolExecution({ message }: Props) {
   const CategoryIcon = config.icon;
 
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'flex-start', mb: 1.5, ml: 5 }}>
+    <Box sx={{ display: 'flex', justifyContent: 'flex-start', mb: { xs: 1, md: 1.5 }, ml: { xs: 3, md: 5 } }}>
       <Box
         sx={{
           border: 1,
           borderColor: isCompleted ? config.color : 'grey.300',
-          borderRadius: 2, px: 2, py: 1,
+          borderRadius: 2, px: { xs: 1.5, md: 2 }, py: { xs: 0.75, md: 1 },
           bgcolor: isCompleted ? config.bgColor : 'transparent',
           minWidth: 280,
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <CategoryIcon sx={{ fontSize: 18, color: config.color }} />
-          <Typography variant="body2" sx={{ fontFamily: 'monospace', fontWeight: 'bold' }}>
+          <CategoryIcon sx={{ fontSize: { xs: 18, md: 24 }, color: config.color }} />
+          <Typography variant="body2" sx={{ fontFamily: 'monospace', fontWeight: 'bold', fontSize: { xs: 13, md: 14 } }}>
             {message.toolName}
           </Typography>
           <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center', gap: 0.5 }}>
             {isCompleted ? (
-              <CheckCircle sx={{ fontSize: 18, color: config.color }} />
+              <CheckCircle sx={{ fontSize: { xs: 18, md: 24 }, color: config.color }} />
             ) : (
               <>
                 <CircularProgress size={16} />

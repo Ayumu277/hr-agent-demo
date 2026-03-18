@@ -1,6 +1,9 @@
-import { useState, useEffect, type KeyboardEvent } from 'react';
-import { Box, TextField, IconButton } from '@mui/material';
-import { Send } from '@mui/icons-material';
+import { useState, useEffect, useRef, type KeyboardEvent, type MouseEvent } from 'react';
+import {
+  Box, TextField, IconButton, useMediaQuery, useTheme,
+  Menu, MenuItem, ListItemIcon, ListItemText,
+} from '@mui/material';
+import { Send, AddCircleOutline, PhotoCamera, InsertDriveFile, Description } from '@mui/icons-material';
 
 interface Props {
   onSend: (message: string) => void;
@@ -10,6 +13,10 @@ interface Props {
 
 export default function ChatInput({ onSend, disabled, pendingText }: Props) {
   const [input, setInput] = useState('');
+  const [attachMenuAnchor, setAttachMenuAnchor] = useState<null | HTMLElement>(null);
+  const theme = useTheme();
+  const isMobile = !useMediaQuery(theme.breakpoints.up('md'));
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (pendingText) {
@@ -36,8 +43,55 @@ export default function ChatInput({ onSend, disabled, pendingText }: Props) {
     }
   };
 
+  const handleAttachOpen = (e: MouseEvent<HTMLElement>) => {
+    setAttachMenuAnchor(e.currentTarget);
+  };
+
+  const handleAttachClose = () => {
+    setAttachMenuAnchor(null);
+  };
+
+  const handleAttachSelect = (type: string) => {
+    handleAttachClose();
+    if (fileInputRef.current) {
+      fileInputRef.current.accept = type === 'photo' ? 'image/*' : '*/*';
+      fileInputRef.current.capture = type === 'photo' ? 'environment' : '';
+      fileInputRef.current.click();
+    }
+  };
+
   return (
-    <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-end' }}>
+    <Box sx={{ display: 'flex', gap: 0.5, alignItems: 'flex-end' }}>
+      <input type="file" ref={fileInputRef} hidden />
+
+      <IconButton
+        onClick={handleAttachOpen}
+        disabled={disabled}
+        sx={{ minWidth: 44, minHeight: 44, color: 'text.secondary' }}
+      >
+        <AddCircleOutline />
+      </IconButton>
+      <Menu
+        anchorEl={attachMenuAnchor}
+        open={Boolean(attachMenuAnchor)}
+        onClose={handleAttachClose}
+        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+        transformOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+      >
+        <MenuItem onClick={() => handleAttachSelect('photo')}>
+          <ListItemIcon><PhotoCamera fontSize="small" /></ListItemIcon>
+          <ListItemText>写真</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={() => handleAttachSelect('file')}>
+          <ListItemIcon><InsertDriveFile fontSize="small" /></ListItemIcon>
+          <ListItemText>ファイル</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={() => handleAttachSelect('document')}>
+          <ListItemIcon><Description fontSize="small" /></ListItemIcon>
+          <ListItemText>ドキュメント</ListItemText>
+        </MenuItem>
+      </Menu>
+
       <TextField
         fullWidth multiline maxRows={4}
         placeholder="メッセージを入力..."
@@ -45,9 +99,9 @@ export default function ChatInput({ onSend, disabled, pendingText }: Props) {
         onChange={(e) => setInput(e.target.value)}
         onKeyDown={handleKeyDown}
         disabled={disabled}
-        size="small"
+        size={isMobile ? 'medium' : 'small'}
       />
-      <IconButton color="primary" onClick={handleSend} disabled={disabled || !input.trim()}>
+      <IconButton color="primary" onClick={handleSend} disabled={disabled || !input.trim()} sx={{ minWidth: 44, minHeight: 44 }}>
         <Send />
       </IconButton>
     </Box>

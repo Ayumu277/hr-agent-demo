@@ -1,4 +1,9 @@
-import { Box, Typography, Chip, Paper, Stack, LinearProgress } from '@mui/material';
+import {
+  Box, Typography, Chip, Paper, Stack, LinearProgress,
+  useMediaQuery, useTheme, Card, CardContent,
+  Accordion, AccordionSummary, AccordionDetails,
+} from '@mui/material';
+import { ExpandMore } from '@mui/icons-material';
 import { DataGrid } from '@mui/x-data-grid';
 import type { GridColDef } from '@mui/x-data-grid';
 import staffsData from '../../data/staffs.json';
@@ -95,56 +100,203 @@ function countByStatus<T extends { status: string }>(data: T[]) {
   return counts;
 }
 
-export default function DashboardPage() {
-  const staffCounts = countByStatus(staffsData);
-  const jobCounts = countByStatus(jobsData);
-  const contractCounts = countByStatus(contractsData);
+type StaffItem = { id: string; name: string; skills: string[]; status: string; currentClient: string | null; qualifications: string[] };
+type JobItem = { id: string; clientName: string; location: string; requiredCount: number; assignedCount: number; skills: string[]; hourlyRate: number; status: string };
+type ContractItem = { id: string; staffId: string; staffName: string; clientName: string; startDate: string; endDate: string; status: string };
 
+function SectionChips({ counts }: { counts: Record<string, number> }) {
+  return (
+    <>
+      {Object.entries(counts).map(([status, count]) => {
+        const s = statusLabel[status];
+        return s ? <Chip key={status} label={`${s.label} ${count}`} size="small" color={s.color} variant="outlined" /> : null;
+      })}
+    </>
+  );
+}
+
+function StaffCards({ data }: { data: StaffItem[] }) {
+  return (
+    <Stack spacing={1}>
+      {data.map((staff) => {
+        const s = statusLabel[staff.status];
+        return (
+          <Card key={staff.id} variant="outlined">
+            <CardContent sx={{ py: 1.5, '&:last-child': { pb: 1.5 } }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
+                <Typography variant="subtitle2" fontWeight="bold">{staff.name}</Typography>
+                {s && <Chip label={s.label} color={s.color} size="small" />}
+              </Box>
+              <Typography variant="caption" color="text.secondary" display="block">
+                スキル: {staff.skills.join(', ')}
+              </Typography>
+              {staff.currentClient && (
+                <Typography variant="caption" color="text.secondary" display="block">
+                  派遣先: {staff.currentClient}
+                </Typography>
+              )}
+            </CardContent>
+          </Card>
+        );
+      })}
+    </Stack>
+  );
+}
+
+function JobCards({ data }: { data: JobItem[] }) {
+  return (
+    <Stack spacing={1}>
+      {data.map((job) => {
+        const s = statusLabel[job.status];
+        const rate = job.requiredCount > 0 ? (job.assignedCount / job.requiredCount) * 100 : 0;
+        const barColor = rate >= 100 ? 'success' : rate > 0 ? 'warning' : 'error';
+        return (
+          <Card key={job.id} variant="outlined">
+            <CardContent sx={{ py: 1.5, '&:last-child': { pb: 1.5 } }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
+                <Typography variant="subtitle2" fontWeight="bold">{job.clientName}</Typography>
+                {s && <Chip label={s.label} color={s.color} size="small" />}
+              </Box>
+              <Typography variant="caption" color="text.secondary" display="block" mb={0.5}>
+                {job.location}
+              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <LinearProgress
+                  variant="determinate"
+                  value={Math.min(rate, 100)}
+                  color={barColor}
+                  sx={{ flexGrow: 1, height: 8, borderRadius: 4 }}
+                />
+                <Typography variant="caption">
+                  {job.assignedCount}/{job.requiredCount}名 ({Math.round(rate)}%)
+                </Typography>
+              </Box>
+            </CardContent>
+          </Card>
+        );
+      })}
+    </Stack>
+  );
+}
+
+function ContractCards({ data }: { data: ContractItem[] }) {
+  return (
+    <Stack spacing={1}>
+      {data.map((contract) => {
+        const s = statusLabel[contract.status];
+        return (
+          <Card key={contract.id} variant="outlined">
+            <CardContent sx={{ py: 1.5, '&:last-child': { pb: 1.5 } }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
+                <Typography variant="subtitle2" fontWeight="bold">
+                  {contract.staffName} × {contract.clientName}
+                </Typography>
+                {s && <Chip label={s.label} color={s.color} size="small" />}
+              </Box>
+              <Typography variant="caption" color="text.secondary" display="block">
+                {contract.startDate} 〜 {contract.endDate}
+              </Typography>
+            </CardContent>
+          </Card>
+        );
+      })}
+    </Stack>
+  );
+}
+
+export default function DashboardPage() {
+  const theme = useTheme();
+  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
+
+  const staffCounts = countByStatus(staffsData as StaffItem[]);
+  const jobCounts = countByStatus(jobsData as JobItem[]);
+  const contractCounts = countByStatus(contractsData as ContractItem[]);
+
+  if (isDesktop) {
+    return (
+      <Box>
+        <Typography variant="h5" fontWeight="bold" gutterBottom>ダッシュボード</Typography>
+        <Stack spacing={3}>
+          <Paper sx={{ p: 2 }}>
+            <Stack direction="row" alignItems="center" spacing={1} mb={1} sx={{ flexWrap: 'wrap' }}>
+              <Typography variant="h6">スタッフ一覧</Typography>
+              <Chip label={`${staffsData.length}名`} size="small" color="primary" />
+              <SectionChips counts={staffCounts} />
+            </Stack>
+            <Box sx={{ height: 400 }}>
+              <DataGrid rows={staffsData} columns={staffColumns} pageSizeOptions={[10]} initialState={{ pagination: { paginationModel: { pageSize: 10 } } }} disableRowSelectionOnClick getRowHeight={() => 'auto'} />
+            </Box>
+          </Paper>
+
+          <Paper sx={{ p: 2 }}>
+            <Stack direction="row" alignItems="center" spacing={1} mb={1} sx={{ flexWrap: 'wrap' }}>
+              <Typography variant="h6">案件一覧</Typography>
+              <Chip label={`${jobsData.length}件`} size="small" color="primary" />
+              <SectionChips counts={jobCounts} />
+            </Stack>
+            <Box sx={{ height: 400 }}>
+              <DataGrid rows={jobsData} columns={jobColumns} pageSizeOptions={[10]} initialState={{ pagination: { paginationModel: { pageSize: 10 } } }} disableRowSelectionOnClick />
+            </Box>
+          </Paper>
+
+          <Paper sx={{ p: 2 }}>
+            <Stack direction="row" alignItems="center" spacing={1} mb={1} sx={{ flexWrap: 'wrap' }}>
+              <Typography variant="h6">契約一覧</Typography>
+              <Chip label={`${contractsData.length}件`} size="small" color="primary" />
+              <SectionChips counts={contractCounts} />
+            </Stack>
+            <Box sx={{ height: 400 }}>
+              <DataGrid rows={contractsData} columns={contractColumns} pageSizeOptions={[10]} initialState={{ pagination: { paginationModel: { pageSize: 10 } } }} disableRowSelectionOnClick />
+            </Box>
+          </Paper>
+        </Stack>
+      </Box>
+    );
+  }
+
+  // Mobile layout
   return (
     <Box>
-      <Typography variant="h5" fontWeight="bold" gutterBottom>ダッシュボード</Typography>
-      <Stack spacing={3}>
-        <Paper sx={{ p: 2 }}>
-          <Stack direction="row" alignItems="center" spacing={1} mb={1} sx={{ flexWrap: 'wrap' }}>
-            <Typography variant="h6">スタッフ一覧</Typography>
-            <Chip label={`${staffsData.length}名`} size="small" color="primary" />
-            {Object.entries(staffCounts).map(([status, count]) => {
-              const s = statusLabel[status];
-              return s ? <Chip key={status} label={`${s.label} ${count}`} size="small" color={s.color} variant="outlined" /> : null;
-            })}
-          </Stack>
-          <Box sx={{ height: 400 }}>
-            <DataGrid rows={staffsData} columns={staffColumns} pageSizeOptions={[10]} initialState={{ pagination: { paginationModel: { pageSize: 10 } } }} disableRowSelectionOnClick getRowHeight={() => 'auto'} />
-          </Box>
-        </Paper>
+      <Typography variant="h6" fontWeight="bold" gutterBottom>ダッシュボード</Typography>
+      <Stack spacing={1}>
+        <Accordion defaultExpanded>
+          <AccordionSummary expandIcon={<ExpandMore />}>
+            <Stack direction="row" alignItems="center" spacing={1} sx={{ flexWrap: 'wrap' }}>
+              <Typography variant="subtitle1" fontWeight="bold">スタッフ一覧</Typography>
+              <Chip label={`${staffsData.length}名`} size="small" color="primary" />
+              <SectionChips counts={staffCounts} />
+            </Stack>
+          </AccordionSummary>
+          <AccordionDetails sx={{ p: 1 }}>
+            <StaffCards data={staffsData as StaffItem[]} />
+          </AccordionDetails>
+        </Accordion>
 
-        <Paper sx={{ p: 2 }}>
-          <Stack direction="row" alignItems="center" spacing={1} mb={1} sx={{ flexWrap: 'wrap' }}>
-            <Typography variant="h6">案件一覧</Typography>
-            <Chip label={`${jobsData.length}件`} size="small" color="primary" />
-            {Object.entries(jobCounts).map(([status, count]) => {
-              const s = statusLabel[status];
-              return s ? <Chip key={status} label={`${s.label} ${count}`} size="small" color={s.color} variant="outlined" /> : null;
-            })}
-          </Stack>
-          <Box sx={{ height: 400 }}>
-            <DataGrid rows={jobsData} columns={jobColumns} pageSizeOptions={[10]} initialState={{ pagination: { paginationModel: { pageSize: 10 } } }} disableRowSelectionOnClick />
-          </Box>
-        </Paper>
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMore />}>
+            <Stack direction="row" alignItems="center" spacing={1} sx={{ flexWrap: 'wrap' }}>
+              <Typography variant="subtitle1" fontWeight="bold">案件一覧</Typography>
+              <Chip label={`${jobsData.length}件`} size="small" color="primary" />
+              <SectionChips counts={jobCounts} />
+            </Stack>
+          </AccordionSummary>
+          <AccordionDetails sx={{ p: 1 }}>
+            <JobCards data={jobsData as JobItem[]} />
+          </AccordionDetails>
+        </Accordion>
 
-        <Paper sx={{ p: 2 }}>
-          <Stack direction="row" alignItems="center" spacing={1} mb={1} sx={{ flexWrap: 'wrap' }}>
-            <Typography variant="h6">契約一覧</Typography>
-            <Chip label={`${contractsData.length}件`} size="small" color="primary" />
-            {Object.entries(contractCounts).map(([status, count]) => {
-              const s = statusLabel[status];
-              return s ? <Chip key={status} label={`${s.label} ${count}`} size="small" color={s.color} variant="outlined" /> : null;
-            })}
-          </Stack>
-          <Box sx={{ height: 400 }}>
-            <DataGrid rows={contractsData} columns={contractColumns} pageSizeOptions={[10]} initialState={{ pagination: { paginationModel: { pageSize: 10 } } }} disableRowSelectionOnClick />
-          </Box>
-        </Paper>
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMore />}>
+            <Stack direction="row" alignItems="center" spacing={1} sx={{ flexWrap: 'wrap' }}>
+              <Typography variant="subtitle1" fontWeight="bold">契約一覧</Typography>
+              <Chip label={`${contractsData.length}件`} size="small" color="primary" />
+              <SectionChips counts={contractCounts} />
+            </Stack>
+          </AccordionSummary>
+          <AccordionDetails sx={{ p: 1 }}>
+            <ContractCards data={contractsData as ContractItem[]} />
+          </AccordionDetails>
+        </Accordion>
       </Stack>
     </Box>
   );
