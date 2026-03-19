@@ -3,13 +3,9 @@ import { Phone, Email, OpenInNew } from '@mui/icons-material';
 
 const PHONE_NUMBER = '070-4303-2374';
 
-const MAILTO_HREF = [
-  'mailto:takumi.sato@aice.co.jp',
-  '?subject=',
-  encodeURIComponent('お手紙を拝見しました'),
-  '&body=',
-  encodeURIComponent('お手紙を拝見しご連絡いたしました。\nぜひ一度お話しさせていただければ幸いです。'),
-].join('');
+const MAILTO_HREF =
+  'mailto:takumi.sato@aice.co.jp?subject=' +
+  encodeURIComponent('お手紙を拝見しました');
 
 const CONTACT_URL = 'https://aice.co.jp/contact';
 
