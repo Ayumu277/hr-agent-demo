@@ -5,7 +5,9 @@ const PHONE_NUMBER = '070-4303-2374';
 
 const MAILTO_HREF =
   'mailto:takumi.sato@aice.co.jp?subject=' +
-  encodeURIComponent('手紙デモ お問い合わせ');
+  encodeURIComponent('手紙デモ お問い合わせ') +
+  '&body=' +
+  encodeURIComponent('ご興味がありましたら、このまま送信してください。折り返しご連絡いたします。');
 
 const CONTACT_URL = 'https://aice.co.jp/contact';
 
