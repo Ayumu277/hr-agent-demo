@@ -7,7 +7,7 @@ const MAILTO_HREF =
   'mailto:takumi.sato@aice.co.jp?subject=' +
   encodeURIComponent('手紙デモ お問い合わせ') +
   '&body=' +
-  encodeURIComponent('ご興味がありましたら、このまま送信してください。折り返しご連絡いたします。');
+  encodeURIComponent('ご興味がありましたら、このままご送信ください。折り返しご連絡いたします。');
 
 const CONTACT_URL = 'https://aice.co.jp/contact';
 
