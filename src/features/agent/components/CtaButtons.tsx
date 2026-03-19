@@ -1,4 +1,4 @@
-import { Stack, Button, Typography } from '@mui/material';
+import { Stack, Button, IconButton, Tooltip } from '@mui/material';
 import { Phone, Email, OpenInNew } from '@mui/icons-material';
 
 const PHONE_NUMBER = '070-4303-2374';
@@ -15,74 +15,47 @@ const CONTACT_URL = 'https://aice.co.jp/contact';
 
 export default function CtaButtons() {
   return (
-    <Stack
-      direction={{ xs: 'column', md: 'row' }}
-      spacing={1}
-      sx={{ mb: 1 }}
-    >
-      {/* 電話 */}
-      <Button
-        component="a"
-        href={`tel:${PHONE_NUMBER.replace(/-/g, '')}`}
-        variant="outlined"
-        startIcon={<Phone />}
-        fullWidth
-        sx={{
-          borderRadius: 2,
-          textTransform: 'none',
-          py: 1,
-          borderColor: 'grey.300',
-          color: 'text.primary',
-          '&:hover': { borderColor: 'primary.main', bgcolor: 'action.hover' },
-        }}
-      >
-        <Typography component="span" variant="body2" fontWeight={600}>
-          電話する
-        </Typography>
-        <Typography component="span" variant="caption" sx={{ ml: 0.5, color: 'text.secondary' }}>
-          {PHONE_NUMBER}
-        </Typography>
-      </Button>
+    <Stack direction="row" spacing={0.5} alignItems="center">
+      <Tooltip title={`電話する ${PHONE_NUMBER}`}>
+        <IconButton
+          component="a"
+          href={`tel:${PHONE_NUMBER.replace(/-/g, '')}`}
+          size="small"
+          sx={{ color: 'text.secondary' }}
+        >
+          <Phone fontSize="small" />
+        </IconButton>
+      </Tooltip>
 
-      {/* メール */}
-      <Button
-        component="a"
-        href={MAILTO_HREF}
-        variant="outlined"
-        startIcon={<Email />}
-        fullWidth
-        sx={{
-          borderRadius: 2,
-          textTransform: 'none',
-          py: 1,
-          borderColor: 'grey.300',
-          color: 'text.primary',
-          '&:hover': { borderColor: 'primary.main', bgcolor: 'action.hover' },
-        }}
-      >
-        <Typography component="span" variant="body2" fontWeight={600}>
-          メールする
-        </Typography>
-      </Button>
+      <Tooltip title="メールする">
+        <IconButton
+          component="a"
+          href={MAILTO_HREF}
+          size="small"
+          sx={{ color: 'text.secondary' }}
+        >
+          <Email fontSize="small" />
+        </IconButton>
+      </Tooltip>
 
-      {/* お問い合わせ */}
       <Button
         component="a"
         href={CONTACT_URL}
         target="_blank"
         rel="noopener noreferrer"
         variant="contained"
-        startIcon={<OpenInNew />}
-        fullWidth
+        size="small"
+        startIcon={<OpenInNew sx={{ fontSize: 16 }} />}
         sx={{
           borderRadius: 2,
           textTransform: 'none',
-          py: 1,
+          py: 0.25,
+          px: 1.5,
+          fontSize: '0.8rem',
+          ml: 0.5,
         }}
       >
-        <Typography component="span" variant="body2" fontWeight={600}>
-          お問い合わせ
-        </Typography>
+        お問い合わせ
       </Button>
     </Stack>
   );

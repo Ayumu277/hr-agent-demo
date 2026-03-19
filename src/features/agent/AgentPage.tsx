@@ -105,6 +105,7 @@ export default function AgentPage() {
           <SmartToy color="primary" />
           <Typography variant={isDesktop ? 'h5' : 'h6'} fontWeight="bold">AIエージェント</Typography>
           <Box sx={{ flexGrow: 1 }} />
+          <CtaButtons />
           <IconButton onClick={resetChat} size="small" title="リセット">
             <RestartAlt />
           </IconButton>
@@ -134,9 +135,6 @@ export default function AgentPage() {
             ),
           )}
         </Paper>
-
-        {/* CTA buttons */}
-        <CtaButtons />
 
         {/* Scenario chips — now just above input */}
         <Box sx={{ mb: 1 }}>
