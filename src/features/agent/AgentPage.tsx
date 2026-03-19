@@ -9,6 +9,7 @@ import ChatMessage from './components/ChatMessage';
 import ToolExecution from './components/ToolExecution';
 import ChatInput from './components/ChatInput';
 import ScenarioChips from './components/ScenarioChips';
+import CtaButtons from './components/CtaButtons';
 
 const MOCK_HISTORY = [
   { id: '1', title: '案件充足の自動化について', date: '今日' },
@@ -133,6 +134,9 @@ export default function AgentPage() {
             ),
           )}
         </Paper>
+
+        {/* CTA buttons */}
+        <CtaButtons />
 
         {/* Scenario chips — now just above input */}
         <Box sx={{ mb: 1 }}>
