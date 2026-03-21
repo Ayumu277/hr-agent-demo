@@ -5,6 +5,7 @@ import { CircularProgress, Box } from '@mui/material';
 
 const DashboardPage = lazy(() => import('./features/dashboard/DashboardPage'));
 const AgentPage = lazy(() => import('./features/agent/AgentPage'));
+const GoRedirectPage = lazy(() => import('./features/auth/GoRedirectPage'));
 
 function Loading() {
   return (
@@ -15,6 +16,7 @@ function Loading() {
 }
 
 const router = createBrowserRouter([
+  { path: '/go', element: <Suspense fallback={<Loading />}><GoRedirectPage /></Suspense> },
   {
     path: '/',
     element: <AppLayout />,
