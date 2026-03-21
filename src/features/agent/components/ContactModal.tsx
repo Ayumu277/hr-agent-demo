@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import {
   Dialog, Drawer, Box, Typography, TextField, Button,
-  IconButton, Avatar, CircularProgress, useMediaQuery, useTheme,
+  IconButton, CircularProgress, useMediaQuery, useTheme,
 } from '@mui/material';
 import { Close, CheckCircleOutline } from '@mui/icons-material';
 import companiesMap from '../../../data/companies.json';
@@ -116,20 +116,10 @@ export default function ContactModal({ open, onClose }: ContactModalProps) {
       ) : (
         /* ── 入力画面 ── */
         <>
-          {/* 信頼バナー */}
-          <Box sx={{
-            display: 'flex', alignItems: 'center', gap: 1.5, p: 2,
-            background: 'linear-gradient(135deg, #f0f4ff, #f5f0ff)',
-            borderRadius: 3, mb: 2.5,
-          }}>
-            <Avatar sx={{ bgcolor: 'primary.main', width: 40, height: 40, fontSize: 14 }}>AI</Avatar>
-            <Box>
-              <Typography variant="body2" fontWeight={600}>AICE株式会社 佐藤 匠</Typography>
-              <Typography variant="caption" color="text.secondary">
-                お手紙をお送りした担当者です。<br />通常1営業日以内にご返信いたします。
-              </Typography>
-            </Box>
-          </Box>
+          {/* 送信を促すメッセージ */}
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            少しでも興味があれば、そのまま送信してください。1営業日以内にご連絡します。
+          </Typography>
 
           {/* 会社名（自動表示） */}
           {companyName && (
@@ -190,9 +180,15 @@ export default function ContactModal({ open, onClose }: ContactModalProps) {
             </Typography>
           )}
 
-          {/* プライバシー文言 */}
+          {/* プライバシー文言 + 会社リンク */}
           <Typography variant="caption" color="text.secondary" sx={{ display: 'block', textAlign: 'center', mt: 1.5 }}>
             ご入力いただいた情報は、お問い合わせ対応のみに使用いたします
+          </Typography>
+          <Typography variant="caption" sx={{ display: 'block', textAlign: 'center', mt: 0.5 }}>
+            <a href="https://aice.co.jp/" target="_blank" rel="noopener noreferrer"
+              style={{ color: '#6366f1', textDecoration: 'none' }}>
+              AICE株式会社 公式サイト
+            </a>
           </Typography>
         </>
       )}
