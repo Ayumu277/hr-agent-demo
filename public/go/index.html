@@ -5,10 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>案件充足管理AIエージェント デモ - AICE株式会社</title>
   <script>
-    // Immediate redirect — no visible UI
+    // QR code landing — store tracking params and redirect to demo
     var params = new URLSearchParams(location.search);
     var companyId = params.get('c') || '';
-    var demoUrl = location.origin + '/' + (companyId ? '?c=' + companyId : '');
+    var userId = params.get('u') || '';
+
+    // Store in localStorage for ContactModal
+    if (companyId) localStorage.setItem('qr_company_id', companyId);
+    if (userId) localStorage.setItem('qr_user_id', userId);
+    localStorage.setItem('qr_scanned_at', new Date().toISOString());
 
     // Track QR scan
     if (companyId) {
@@ -24,6 +29,7 @@
         var td = {
           event: 'qr_scan',
           company: companyId,
+          user: userId,
           session_id: sid,
           timestamp: new Date().toISOString(),
           device: /iPhone|iPod|Android/i.test(navigator.userAgent) ? 'mobile' : 'desktop',
@@ -38,7 +44,7 @@
       } catch (e) {}
     }
 
-    location.replace(demoUrl);
+    location.replace(location.origin + '/');
   </script>
 </head>
 <body></body>
